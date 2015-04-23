@@ -1,0 +1,5 @@
+.include /etc/pulse/default.pa
+load-module module-native-protocol-tcp auth-ip-acl=127.0.0.1
+#set-default-sink PCH,0
+#load-module module-alsa-sink device=dmix
+#load-module module-alsa-source device=dsnoop

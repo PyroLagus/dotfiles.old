@@ -1,0 +1,445 @@
+* packages
+#+begin_src emacs-lisp :tangle yes
+  (package-initialize nil)
+  (add-to-list 'package-archives
+    '("marmalade" . "http://marmalade-repo.org/packages/"))
+  (add-to-list 'package-archives
+    '("melpa-stable" . "http://stable.melpa.org/packages/"))
+  (add-to-list 'package-archives
+    '("org" . "http://orgmode.org/elpa/"))
+  (add-to-list 'package-archives
+    '("melpa" . "http://melpa.org/packages/") t)
+  (unless (package-installed-p 'use-package)
+    (package-refresh-contents)
+    (package-install 'use-package))
+  (setq use-package-verbose t)
+  (require 'use-package)
+  (setq load-prefer-newer t)
+#+end_src
+
+* paradox
+#+begin_src emacs-lisp :tangle yes
+  (use-package paradox
+    :ensure t
+    :config
+    (progn
+      (setq paradox-execute-asynchronously t)
+      (setq paradox-automatically-star t)))
+#+end_src
+
+* nix
+#+begin_src emacs-lisp :tangle yes
+  (use-package nix-mode)
+#+end_src
+
+* pos-tip
+#+begin_src emacs-lisp :tangle yes
+  (use-package pos-tip
+    :ensure t
+    :config
+    (setq pos-tip-background-color "#4e4e4e")
+    (setq pos-tip-foreground-color "#5fafd7"))
+#+end_src
+
+* misc
+#+begin_src emacs-lisp :tangle yes
+  (setq save-interprogram-paste-before-kill t)
+  (setq ag-highlight-search t)
+  (use-package undo-tree
+    :ensure t
+    :init (global-undo-tree-mode)
+    :diminish undo-tree-mode)
+  (global-undo-tree-mode)
+  (setq show-paren-style 'paranthesis)
+  (add-to-list 'auto-mode-alist '("\\.zsh\\'" . sh-mode))
+  (winner-mode 1)
+#+end_src
+
+* company
+#+begin_src emacs-lisp :tangle yes
+  (use-package company
+    :ensure t
+    :diminish company-mode
+    :idle
+    (global-company-mode t)
+    :idle-priority 3)
+  (use-package company-quickhelp
+    :ensure t
+    :idle
+    (company-quickhelp-mode 1)
+    :idle-priority 5)
+  (use-package company-cmake
+    :ensure t)
+#+end_src
+
+* dired
+#+begin_src emacs-lisp :tangle yes
+  (use-package dired
+    :commands dired-mode
+    :config
+    (progn
+      (setq dired-dwim-target t)
+      (setq-default dired-omit-mode t)
+      (bind-key  "C-o" 'dired-omit-mode dired-mode-map)
+      (setq-default dired-omit-files "^\\.?#\\|^\\.$\\|^\\.\\.$\\|^\\.")))
+#+end_src
+
+* helm
+#+begin_src emacs-lisp :tangle yes
+  (use-package helm-config
+    :diminish helm-mode
+    :demand t
+    :ensure helm
+    :bind (("C-c h" . helm-command-prefix)
+           ("M-x" . helm-M-x)
+           ("C-x b" . helm-mini)
+           ("C-x C-f" . helm-find-files)
+           ("C-h SPC" . helm-all-mark-rings)
+           ("M-y" . helm-show-kill-ring))
+    :config
+    (progn
+      (use-package helm-eshell)
+      (use-package helm-files)
+      (use-package helm-grep)
+      (use-package helm-ls-git)
+      (use-package helm-descbinds
+        :ensure t
+        :config (bind-key "d" 'helm-descbinds helm-command-map))
+      (bind-key "<tab>" 'helm-execute-persistent-action helm-map)
+      ;; make tab work in terminal
+      (bind-key "C-i" 'helm-execute-persistent-action helm-map)
+      (bind-key "C-z" 'helm-select-action helm-map)
+      (setq helm-man-or-woman-function 'woman
+            helm-google-suggest-use-curl-p t
+            helm-quick-update t
+            helm-idle-delay 0.01
+            helm-input-idle-delay 0.01
+            helm-split-window-in-side-p t
+            helm-scroll-amount 4)
+      (helm-mode)))
+  (use-package helm-ag
+    :ensure t)
+#+end_src
+
+* projectile
+#+begin_src emacs-lisp :tangle yes
+  (use-package magit
+    :ensure t
+    :diminish magit-auto-revert-mode
+    :commands magit-status
+    :config   (use-package magit-svn
+                :ensure t))
+  (use-package projectile
+    :ensure t
+    :defer t
+    :init
+    (projectile-global-mode t)
+    (setq projectile-completion-system 'helm)
+    :config
+    (use-package helm-projectile
+      :ensure t
+      :config (helm-projectile-on)))
+#+end_src
+
+* gui
+#+begin_src emacs-lisp :tangle yes
+  (setq inhibit-splash-screen t)
+  (menu-bar-mode -1)
+  (tool-bar-mode -1)
+  (scroll-bar-mode -1)
+  (column-number-mode t)
+  (set-default-font "Fira Mono-12")
+  (use-package moe-theme
+    :ensure t
+    :config
+    (progn
+      (moe-dark)
+      (use-package smart-mode-line
+        :ensure t
+        :config
+        (progn
+          (setq sml/no-confirm-load-theme t)
+          (setq sml/theme 'dark)
+          (if (daemonp)
+              (add-hook 'after-make-frame-functions
+                        (lambda (frame)
+                          (sml/setup)))
+            (sml/setup))))))
+
+  ;; show-paren-mode
+  (setq show-paren-delay 0)
+  (show-paren-mode t)
+#+end_src
+
+* french spacing
+#+begin_src emacs-lisp :tangle yes
+  (setq sentence-end-double-space nil
+      colon-double-space nil)
+#+end_src
+
+* multiple cursors
+#+begin_src emacs-lisp :tangle yes
+(global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
+(global-set-key (kbd "C->") 'mc/mark-next-like-this)
+(global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+(global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
+#+end_src
+
+* member function
+#+begin_src emacs-lisp :tangle yes
+(setq mf--source-file-extension "cpp")
+#+end_src
+
+* latex
+#+begin_src emacs-lisp :tangle yes
+  (use-package tex
+    :ensure auctex
+    :commands latex-mode
+    :config
+    (use-package latex
+      :config
+      (progn
+        (setq TeX-view-program-list
+              '(("zathura"
+                 ("zathura" (mode-io-correlate "-sync.sh")
+                  " "
+                  (mode-io-correlate "%n:1:%b ")
+                  "%o"))))
+        (setq TeX-view-program-selection '((output-pdf "zathura")))
+        (set-default 'preview-scale-function 1.2)
+        (add-hook 'LaTeX-mode-hook (lambda () (TeX-global-PDF-mode t)))
+        (add-hook 'LaTeX-mode-hook 'TeX-source-correlate-mode)
+        (add-hook 'LaTeX-mode-hook 'flyspell-mode)
+        (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+            (setq reftex-plug-into-AUCTeX t)
+        (add-to-list 'LaTeX-verbatim-environments "comment")
+        (add-to-list 'TeX-command-list
+                     '("Glossary" "makeglossaries %s" TeX-run-command nil
+                       (latex-mode) :help "Create glossaries")))))
+#+end_src
+
+* org
+#+begin_src emacs-lisp :tangle yes
+  (use-package org
+    :ensure org-plus-contrib
+    :commands org-mode
+    :bind (("C-c l" . org-store-link)
+           ("C-c c" . org-capture)
+           ("C-c a" . org-agenda)
+           ("C-c b" . org-iswitchb)
+           ("C-c C-w" . org-refile)
+           ("C-c j" . org-clock-goto)
+           ("C-c C-x C-o" . org-clock-out))
+    :init
+    (progn
+      (setq org-directory "~/org")
+      (setq org-agenda-files '("~/org"))
+      (setq org-mobile-directory "~/org/mobile")
+      (setq org-default-notes-file (concat org-directory "/notes.org"))
+      (setq org-log-done t)
+      (setq org-clock-persist t)
+          (setq org-file-apps
+            '((auto-mode . emacs)
+              ("\\.mm\\'" . system)
+              ("\\.x?html?\\'" . "firefox %s")
+              ("\\.pdf::\\([0-9]+\\)\\'" . "zathura \"%s\" -P %1")
+              ("\\.pdf\\'" . "zathura \"%s\"")))
+      (setq org-refile-targets (quote ((org-agenda-files :maxlevel . 4))))
+      (setq org-agenda-span 'month)
+      (setq org-agenda-custom-commands
+            '(("h" agenda "120 days"
+               ((org-agenda-show-all-dates nil)
+                (org-agenda-span 120))
+               )))
+      (setq org-capture-templates
+            '(("t" "Task" entry (file+headline "" "Tasks")
+               "* TODO %?\n  %U\n  %a")
+              ("s" "Song" table-line (file+headline "~/org/org.org" "Songs")
+               "|%(format-current-song (get-current-song))|%U|%a|"
+               :immediate-finish t)))
+      (setq org-refile-allow-creating-parent-nodes 'confirm)
+      (setq org-src-fontify-natively t)
+      (setq org-use-speed-commands t)
+      (setq org-clock-mode-line-total 'current))
+    :config
+    (progn
+      (org-clock-persistence-insinuate)
+      (org-babel-do-load-languages
+       'org-babel-load-languages
+       '((R . t)))
+          (setq org-use-speed-commands t)
+      (add-to-list 'org-modules "org-habit")
+      (use-package cdlatex
+        :ensure t
+        :commands turn-on-org-cdlatex)
+      (add-hook 'org-mode-hook 'turn-on-org-cdlatex)
+      (use-package ox-latex
+        :defer t
+        :config
+        (add-to-list 'org-latex-classes
+                     '("koma-article"
+                       "\\documentclass{scrartcl}"
+                       ("\\section{%s}" . "\\section*{%s}")
+                       ("\\subsection{%s}" . "\\subsection*{%s}")
+                       ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                       ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                       ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+        (use-package ox-bibtex)
+        (use-package ox :config
+          :defer t
+          (setq org-export-default-language "de-de"))
+        (setq org-latex-packages-alist '(("ngerman" "babel" nil)))
+        (setq org-latex-default-packages-alist '(("AUTO" "inputenc" t)
+                                                 ("T1" "fontenc" t)
+                                                 ("" "fixltx2e" nil)
+                                                 ("" "graphicx" t)
+                                                 ("" "longtable" nil)
+                                                 ("" "float" nil)
+                                                 ("" "wrapfig" nil)
+                                                 ("" "rotating" nil)
+                                                 ("normalem" "ulem" t)
+                                                 ("" "amsmath" t)
+                                                 ("" "textcomp" t)
+                                                 ("" "marvosym" t)
+                                                 ("" "wasysym" t)
+                                                 ("" "amssymb" t)
+                                                 ("hyphens" "url" nil)
+                                                 ("" "hyperref" nil)
+                                                 "\\tolerance=1000"))
+
+        (setq org-highlight-latex-and-related '(latex script entities))
+        (setq org-latex-toc-command "\\tableofcontents\n\\clearpage\n")
+        (setq org-format-latex-options (plist-put org-format-latex-options :scale 2.0)))))
+#+end_src
+
+* functions
+** yank to clipboard
+#+begin_src emacs-lisp :tangle yes
+(defun clipboard-dwim ()
+  (interactive)
+  (if (region-active-p)
+      (clipboard-kill-ring-save (region-beginning) (region-end))
+    (clipboard-yank)))
+
+(global-set-key (kbd "C-c w") 'clipboard-dwim)
+#+end_src
+
+** comment region
+#+begin_src emacs-lisp :tangle yes
+(defun comment-dwim-line (&optional arg)
+    "Replacement for the comment-dwim command.
+    If no region is selected and current line is not blank and we are not at the end of the line,
+    then comment current line.
+    Replaces default behaviour of comment-dwim, when it inserts comment at the end of the line."
+      (interactive "*P")
+      (comment-normalize-vars)
+      (if (and (not (region-active-p)) (not (looking-at "[ \t]*$")))
+          (comment-or-uncomment-region (line-beginning-position) (line-end-position))
+        (comment-dwim arg)))
+
+(global-set-key (kbd "M-;") 'comment-dwim-line)
+#+end_src
+
+** sprunge region & sprunge buffer
+#+begin_src emacs-lisp :tangle yes
+;; functions to paste to http://sprunge.us using web.el
+(use-package web
+  :ensure t)
+(defun sprunge-region (start end)
+  (interactive "r")
+  (let ((buffer-contents (buffer-substring-no-properties start end))
+             (query-data (make-hash-table :test 'equal)))
+          (puthash 'sprunge buffer-contents query-data)
+      (web-http-post
+       (lambda (con header data)
+         (kill-new (substring data 0 -1)))
+       :url "http://sprunge.us"
+       :data query-data)))
+(defun sprunge-buffer ()
+  (interactive)
+  (sprunge-region (point-min) (point-max)))
+#+end_src
+
+* bindings
+#+begin_src emacs-lisp :tangle yes
+  (global-set-key (kbd "M-;") 'comment-dwim-line)
+  ;; expand-region
+  (pending-delete-mode t)
+  (use-package expand-region
+    :ensure t
+    :bind (("C-=" . er/expand-region)))
+  (global-set-key (kbd "C-x C-b") 'ibuffer)
+  (global-set-key (kbd "C-x C-r") 'revert-buffer)
+#+end_src
+
+* haskell
+* haskell
+#+begin_src emacs-lisp :tangle yes
+  (use-package haskell-mode
+    :ensure t
+    :mode "\\.l?hs\\'"
+    :init (progn
+      (add-hook 'haskell-mode-hook 'structured-haskell-mode)
+      (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
+      (add-hook 'haskell-mode-hook 'hindent-mode)
+      (add-hook 'haskell-interactive-mode-hook 'structured-haskell-repl-mode))
+    :config
+    (progn
+      (setq haskell-process-args-cabal-repl '("--ghc-option=-ferror-spans" "--with-ghc=ghci-ng"))
+      (define-key haskell-mode-map (kbd "C-`") 'haskell-interactive-bring)
+      (setq haskell-process-log t)
+      (setq haskell-interactive-mode-eval-mode 'haskell-mode)
+      (use-package shm)
+      (use-package hindent
+        :config (setq hindent-style "chris-done"))
+      (use-package shm-case-split)
+      (define-key haskell-mode-map (kbd "C-c i") 'hindent/reformat-decl)
+      (define-key shm-map (kbd "C-c C-s") 'shm/case-split)
+      (use-package haskell
+        :config (progn
+                  (bind-key  "M-." 'haskell-mode-goto-loc interactive-haskell-mode-map)
+                  (bind-key "C-c C-t" 'haskell-mode-show-type-at interactive-haskell-mode-map)
+                  (bind-key "C-?" 'haskell-mode-find-uses interactive-haskell-mode-map)))
+      (setq haskell-process-wrapper-function
+            (lambda
+              (argv)
+              (append
+               (list "nix-shell" "-I" "." "--command")
+               (list
+                (mapconcat
+                 (quote identity)
+                 argv " ")))))))
+#+end_src
+* indentation
+#+begin_src emacs-lisp :tangle yes
+  (setq-default tab-width 4)
+  (setq-default indent-tabs-mode nil)
+
+  (setq js-indent-level 2)
+  (setq-default c-basic-offset 4)
+#+end_src
+
+* flycheck
+#+begin_src emacs-lisp :tangle yes
+  (use-package flycheck
+    :ensure t
+    :diminish flycheck-mode
+    :defer t
+    :config (progn (add-hook 'after-init-hook #'global-flycheck-mode)
+                   (setq flycheck-emacs-lisp-load-path 'inherit)))
+  ;; (eval-after-load 'flycheck
+  ;;   '(add-to-list 'flycheck-checkers 'haskell-process))
+  ;; (require 'haskell-flycheck)
+#+end_src
+
+* symlinks
+#+begin_src emacs-lisp :tangle yes
+  (setq vc-follow-symlinks t)
+#+end_src
+
+* hunspell
+#+begin_src emacs-lisp :tangle yes
+  (use-package rw-hunspell
+    :ensure t
+     :config ( progn (setq ispell-program-name "hunspell"))
+ #+end_src

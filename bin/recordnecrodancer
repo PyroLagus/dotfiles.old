@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+GAME="Crypt of the Necrodancer"
+mkdir -p "/home/codehero/Gameplay/$GAME/"
+OUTPUT_FILE="/home/codehero/Gameplay/$GAME/$(date +'%m-%d-%y--%H-%M-%S').mkv"
+
+ffmpeg -f alsa -ac 2 -i pulse -f x11grab -r 30 -s 1366x768 -i :0.0 -acodec pcm_s16le -vcodec libx264 -preset ultrafast -crf 0 -threads 5 "$OUTPUT_FILE"

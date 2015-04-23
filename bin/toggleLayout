@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+if ( setxkbmap -query | grep dvp )
+then setxkbmap us -option ctrl:nocaps
+else setxkbmap us -variant dvp -option ctrl:nocaps
+fi
