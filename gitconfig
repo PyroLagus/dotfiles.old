@@ -1,3 +1,5 @@
 [user]
 	email = codehero@nerdpol.ch
 	name = C0DEHERO
+[credential]
+	helper = cache
