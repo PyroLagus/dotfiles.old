@@ -1,6 +1,7 @@
 import XMonad
 import XMonad.Actions.GridSelect
 import XMonad.Actions.WindowBringer
+import XMonad.Actions.SpawnOn
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.ManageHelpers
@@ -13,6 +14,7 @@ import XMonad.Layout.NoBorders
 import XMonad.Layout.Spiral
 import XMonad.Layout.TrackFloating
 import XMonad.Layout.MosaicAlt
+import XMonad.Layout.PerWorkspace
 
 import XMonad.Layout.Tabbed
 
@@ -64,8 +66,10 @@ myManageHook = composeAll $ map
                map shiftGame myGames <+>
                allowFullFloatHook
 
-myLayout = tiled ||| Mirror tiled ||| Full ||| simpleTabbed  ||| spiral (1 / 1.618)
-  where
+myLayout = onWorkspace "game" (avoidStrutsOn [] . noBorders $ Full) $
+           avoidStruts $
+           tiled ||| Mirror tiled ||| Full ||| simpleTabbed  ||| spiral (1 / 1.618)
+   where
 -- default tiling algorithm partitions the screen into two panes
     tiled = Tall nmaster delta ratio
 -- The default number of windows in the master pane
@@ -179,6 +183,7 @@ myKeys c = mkKeymap c $
            , ("<XF86TouchpadToggle>", spawn "~/bin/toggleTouchpad")
            , ("C-M1-<Pause>"   , spawn "~/bin/toggleLayout")
            , ("C-S-<Pause>"    , spawn "~/bin/toggleLayout")
+           , ("C-M1-<Return>"  , spawnOn "misc" "urxvtc -e ~/bin/recordnecrodancer")
            ] ++
            [(m ++ k, windows $ f w)
            | (w, k) <- zip (workspaces c) workspaceKeys
