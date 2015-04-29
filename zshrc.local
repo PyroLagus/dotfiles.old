@@ -1,4 +1,5 @@
 source $HOME/.aliases
+source $HOME/.functions
 
 export EDITOR=emacsclient
 

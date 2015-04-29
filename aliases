@@ -1,7 +1,11 @@
 alias ec='emacsclient'
+alias du='du -hs'
 
-nix?(){ nix-env -qa \* -P | fgrep -i "$1"; }
-queryNixPkgs(){ nix-env -qa \* -P -f $NIXPKGS_ALL | grep -i "$1"; }
+# sudo aliases
+alias sucp='sudo cp'
+alias surm='sudo rm'
+alias surmdir='sudo rmdir'
+alias sumv='sudo mv'
 
 ## get top 10 shell commands:
 alias top10='print -l ${(o)history%% *} | uniq -c | sort -nr | head -n 10'
