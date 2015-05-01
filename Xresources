@@ -3,7 +3,7 @@ URxvt.font:xft:Fira Mono:pixelsize=12
 URxvt*secondaryScroll:true
 URxvt.scrollBar: false
 URxvt.perl-ext-common:  default,matcher,tabbed
-URxvt.url-launcher:      /run/current-system/sw/bin/firefox
+URxvt.url-launcher:     /home/codehero/.nix-profile/bin/firefox-nightly 
 URxvt.matcher.button:   1
 
 URxvt.keysym.C-Delete:  perl:matcher:last
