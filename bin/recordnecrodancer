@@ -20,4 +20,4 @@ else
     SOURCE=$DEFAULT
 fi
 
-ffmpeg -f pulse -ac 2 -i $SOURCE -f x11grab -r 30 -s 1366x768 -i :0.0 -acodec pcm_s16le -vcodec libx264 -preset ultrafast -crf 0 -threads 5 "$OUTPUT_FILE"
+ffmpeg -f pulse -ac 2 -i $SOURCE -f x11grab -r 30 -s 1366x768 -i :0.0 -acodec pcm_s16le -vcodec libx264 -preset ultrafast -crf 0 -threads 5 "$OUTPUT_FILE" -v 0

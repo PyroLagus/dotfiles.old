@@ -373,42 +373,36 @@
 #+end_src
 
 * haskell
-* haskell
 #+begin_src emacs-lisp :tangle yes
-  (use-package haskell-mode
-    :ensure t
-    :mode "\\.l?hs\\'"
-    :init (progn
-      (add-hook 'haskell-mode-hook 'structured-haskell-mode)
-      (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
-      (add-hook 'haskell-mode-hook 'hindent-mode)
-      (add-hook 'haskell-interactive-mode-hook 'structured-haskell-repl-mode))
-    :config
-    (progn
-      (setq haskell-process-args-cabal-repl '("--ghc-option=-ferror-spans" "--with-ghc=ghci-ng"))
-      (define-key haskell-mode-map (kbd "C-`") 'haskell-interactive-bring)
-      (setq haskell-process-log t)
-      (setq haskell-interactive-mode-eval-mode 'haskell-mode)
-      (use-package shm)
-      (use-package hindent
-        :config (setq hindent-style "chris-done"))
-      (use-package shm-case-split)
-      (define-key haskell-mode-map (kbd "C-c i") 'hindent/reformat-decl)
-      (define-key shm-map (kbd "C-c C-s") 'shm/case-split)
-      (use-package haskell
-        :config (progn
-                  (bind-key  "M-." 'haskell-mode-goto-loc interactive-haskell-mode-map)
-                  (bind-key "C-c C-t" 'haskell-mode-show-type-at interactive-haskell-mode-map)
-                  (bind-key "C-?" 'haskell-mode-find-uses interactive-haskell-mode-map)))
-      (setq haskell-process-wrapper-function
-            (lambda
-              (argv)
-              (append
-               (list "nix-shell" "-I" "." "--command")
-               (list
-                (mapconcat
-                 (quote identity)
-                 argv " ")))))))
+(use-package haskell-mode
+  :ensure t
+  :mode "\\.\\(l\\|c\\)?hs\\'"
+  :init (progn
+          (add-hook 'haskell-mode-hook 'structured-haskell-mode)
+          (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
+          (use-package ide-backend-mode
+            :load-path "~/code/ide-backend-mode")
+          (add-hook 'haskell-mode-hook 'hindent-mode)
+          (add-hook 'haskell-mode-hook 'ide-backend-mode)
+          (add-hook 'haskell-interactive-mode-hook 'structured-haskell-repl-mode))
+  :config
+  (progn
+    (setq haskell-process-args-cabal-repl '("--ghc-option=-ferror-spans"))
+    (define-key haskell-mode-map (kbd "C-`") 'haskell-interactive-bring)
+    (setq haskell-process-log t)
+    (setq haskell-interactive-mode-eval-mode 'haskell-mode)
+    (use-package shm
+      :load-path "~/code/structured-haskell-mode/elisp")
+      :config (setq shm-program-name "~/code/structured-haskell-mode/dist/build/structured-haskell-mode/structured-haskell-mode")
+    (use-package hindent
+      :load-path "~/code/hindent/elisp"
+      :config (setq hindent-style "chris-done"))
+    (define-key haskell-mode-map (kbd "C-c i") 'hindent/reformat-decl)
+    (use-package haskell)
+    (defun haskell-generate-wrapper (wrappername typesignature)
+      (interactive "sname of the wrapper: \nstype signature: ")
+      (insert (format "foreign import ccall safe \"wrapper\"\n  %s ::\n    (%s) ->\n    IO (FunPtr (%s))\n"
+                      wrappername typesignature typesignature)))))
 #+end_src
 * indentation
 #+begin_src emacs-lisp :tangle yes

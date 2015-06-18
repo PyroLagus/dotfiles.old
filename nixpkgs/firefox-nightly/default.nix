@@ -7,18 +7,18 @@
 , dbus_libs
 , fontconfig
 , freetype
-, ffmpeg
 , gconf
 , gdk_pixbuf
 , glib
 , glibc
-, gst_plugins_base
-, gst_plugins_bad
-, gst_plugins_good
-, gst_plugins_ugly
-, gst_ffmpeg
+, gst-libav
+, gst-plugins-bad
+, gst-plugins-base
+, gst-plugins-good
+, gst-plugins-ugly
 , gstreamer
 , gtk
+, heimdal
 , libX11
 , libXScrnSaver
 , libXcomposite
@@ -28,15 +28,15 @@
 , libXinerama
 , libXrender
 , libXt
+, libav
 , libcanberra
 , libgnome
 , libgnomeui
+, libpulseaudio
 , mesa
 , nspr
 , nss
 , pango
-, heimdal
-, pulseaudio
 , systemd
 }:
 
@@ -84,18 +84,18 @@ stdenv.mkDerivation {
       dbus_libs
       fontconfig
       freetype
-      ffmpeg
       gconf
       gdk_pixbuf
       glib
       glibc
-      gst_plugins_base
-      gst_plugins_bad
-      gst_plugins_good
-      gst_plugins_ugly
-      gst_ffmpeg
+      gst-libav
+      gst-plugins-bad
+      gst-plugins-base
+      gst-plugins-good
+      gst-plugins-ugly
       gstreamer
       gtk
+      heimdal
       libX11
       libXScrnSaver
       libXcomposite
@@ -105,15 +105,15 @@ stdenv.mkDerivation {
       libXinerama
       libXrender
       libXt
+      libav
       libcanberra
       libgnome
       libgnomeui
+      libpulseaudio
       mesa
       nspr
       nss
       pango
-      heimdal
-      pulseaudio
       systemd
     ] + ":" + stdenv.lib.makeSearchPath "lib64" [
       stdenv.cc.cc

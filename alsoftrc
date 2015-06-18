@@ -1,0 +1,5 @@
+# Create a config file for openalsoft that allows the source to move
+# but still uses the wrong default
+# ~/.alsoftrc
+[pulse]
+allow-moves=yes
