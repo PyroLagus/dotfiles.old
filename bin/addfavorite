@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+mpc -f "[[%artist% - ]%title%]|[%file%]" | head -n 1 >> ~/documents/mpcFavorites.txt
